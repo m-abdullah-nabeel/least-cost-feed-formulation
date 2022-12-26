@@ -11,6 +11,7 @@ class Item(BaseModel):
     cost: list = []
     ing_comp: list = []
     req_ing: list = []
+    data: list = []
 
 class ResModel(BaseModel):
     name: str
