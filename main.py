@@ -28,6 +28,24 @@ app = FastAPI()
 async def formulate_feed(item: Item):
     try:
         data = item.dict()
+        CPs = []
+        MEs = []
+        names = [] 
+        costs = []
+        bounds = []
+        # for i in range(len(data)):
+        #     names.append(data[i]['name'])
+        #     costs.append(data[i]['cost'])
+        #     CPs.append(data[i]['CP'])
+        #     MEs.append(data[i]['ME'])
+        #     bounds.append((data[i]['min'], data[i]['max']))
+        
+        # inputs_matrix = [[CPs], [MEs]]
+
+        # print(inputs_matrix)
+    
+
+        # res = linprog(costs, A_eq=inputs_matrix, b_eq=[16, 2200])
         res = linprog(data['cost'], A_eq=data['ing_comp'], b_eq=data['req_ing'])
         # print(res)
 
