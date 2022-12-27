@@ -33,36 +33,51 @@ async def formulate_feed(item: Item):
         names = [] 
         costs = []
         bounds = []
-        # for i in range(len(data)):
-        #     names.append(data[i]['name'])
-        #     costs.append(data[i]['cost'])
-        #     CPs.append(data[i]['CP'])
-        #     MEs.append(data[i]['ME'])
-        #     bounds.append((data[i]['min'], data[i]['max']))
+        sum_mat = []
+        # print(data['data'])
+        row = data['data']
+
+        for i in range(len(row)):
+            print(row[i])
+            sum_mat.append(1)
+            names.append(row[i]['name'])
+            costs.append(row[i]['cost'])
+            CPs.append(row[i]['CP'])
+            MEs.append(row[i]['ME'])
+            bounds.append((row[i]['min'], row[i]['max']))
         
-        # inputs_matrix = [[CPs], [MEs]]
+        CPs = [ -x for x in CPs]
+        MEs = [ -x for x in MEs]
+
+        # inputs_matrix = [CPs, MEs]
+        print("CP: ", CPs)
+        print("ME: ", MEs)
+        print("Names: ", names)
+        print("Costs: ", costs)
+        print("Bounds: ", bounds)
+        print("Sum matrix: ", sum_mat)
 
         # print(inputs_matrix)
-    
 
-        # res = linprog(costs, A_eq=inputs_matrix, b_eq=[16, 2200])
-        res = linprog(data['cost'], A_eq=data['ing_comp'], b_eq=data['req_ing'])
-        # print(res)
+        res = linprog(costs, A_ub=[CPs, MEs], b_ub=[-16, -2200], A_eq=[sum_mat], b_eq=[1] #, bounds=bounds
+        )
+        # res = linprog(data['cost'], A_eq=data['ing_comp'], b_eq=data['req_ing'])
+        print(res)
 
         f = dict()
         r_items = res.items()
         for k, v in r_items:
             if str(type(v)) == "<class 'numpy.ndarray'>":
-                print("Found")
+                # print("Found")
                 f.update({k:list(v)})
             else: 
-                print(type(v))
+                # print(type(v))
                 f[k] = str(v)
 
         res_dict = {
-            "input": item, 
             "quantities": list(res.x),
-            "raw": f
+            "input": item, 
+            # "raw": f
         }
 
         return res_dict
