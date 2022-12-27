@@ -8,10 +8,8 @@ import json
 from fastapi.encoders import jsonable_encoder
 
 class Item(BaseModel):
-    cost: list = []
-    ing_comp: list = []
-    req_ing: list = []
-    data: list = []
+    # data: list = []
+    feeds: list = []
 
 class ResModel(BaseModel):
     name: str
@@ -19,7 +17,6 @@ class ResModel(BaseModel):
     price: float
     tax: float | None = None
     tags: list[str] = []
-
 
 app = FastAPI()
 
@@ -34,8 +31,9 @@ async def formulate_feed(item: Item):
         costs = []
         bounds = []
         sum_mat = []
-        # print(data['data'])
-        row = data['data']
+
+        # print(data['feeds'])
+        row = data['feeds']
 
         for i in range(len(row)):
             print(row[i])
@@ -49,7 +47,6 @@ async def formulate_feed(item: Item):
         CPs = [ -x for x in CPs]
         MEs = [ -x for x in MEs]
 
-        # inputs_matrix = [CPs, MEs]
         print("CP: ", CPs)
         print("ME: ", MEs)
         print("Names: ", names)
@@ -57,11 +54,8 @@ async def formulate_feed(item: Item):
         print("Bounds: ", bounds)
         print("Sum matrix: ", sum_mat)
 
-        # print(inputs_matrix)
-
         res = linprog(costs, A_ub=[CPs, MEs], b_ub=[-16, -2200], A_eq=[sum_mat], b_eq=[1] #, bounds=bounds
         )
-        # res = linprog(data['cost'], A_eq=data['ing_comp'], b_eq=data['req_ing'])
         print(res)
 
         f = dict()
@@ -74,13 +68,27 @@ async def formulate_feed(item: Item):
                 # print(type(v))
                 f[k] = str(v)
 
-        res_dict = {
-            "quantities": list(res.x),
-            "input": item, 
-            # "raw": f
-        }
+        status = f['status']
 
-        return res_dict
+        print(data)
+
+        if f['status'] == '0':
+            # print("Equal to Zero")
+            return {
+                "status": status,
+                "quantities": list(res.x),
+                "input": item
+            }
+
+        else:
+            # print("Not Zero")
+            res_dict = {
+                "status": status,
+                "message": "Disnt solve the problem: " + str(res.message),
+                # "input": item, 
+                # "raw": f
+            }
+            return res_dict
 
     except:
         return {"error": "Some Error occured"}
