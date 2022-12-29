@@ -13,9 +13,9 @@ class Item(BaseModel):
 
 class ResModel(BaseModel):
     name: str
-    description: str | None = None
+    description: str 
     price: float
-    tax: float | None = None
+    tax: float
     tags: list[str] = []
 
 app = FastAPI()
@@ -70,14 +70,22 @@ async def formulate_feed(item: Item):
 
         status = f['status']
 
-        print(data)
+        # print(data)
 
         if f['status'] == '0':
             # print("Equal to Zero")
+            print("======================================")
+            print("Results: ")
+            print(names)
+            print(res.x)
+            lcf = dict(zip(names, res.x))
+            print(lcf)
+
             return {
                 "status": status,
-                "quantities": list(res.x),
-                "input": item
+                "least-cost-feed": lcf,
+                # "quantities": list(res.x),
+                # "input": item
             }
 
         else:
