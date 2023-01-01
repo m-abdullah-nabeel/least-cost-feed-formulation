@@ -84,7 +84,7 @@ async def formulate_feed(item: Item):
             return {
                 "available": 1,
                 "status": status,
-                "least-cost-feed": lcf,
+                "results": lcf,
                 # "quantities": list(res.x),
                 # "input": item
             }
