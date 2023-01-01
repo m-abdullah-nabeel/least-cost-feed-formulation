@@ -21,7 +21,7 @@ class ResModel(BaseModel):
 app = FastAPI()
 
 # @app.post("/formulate/", response_model=ResItem)
-@app.post("/formulate/")
+@app.post("/formulate")
 async def formulate_feed(item: Item):
     try:
         data = item.dict()
@@ -82,6 +82,7 @@ async def formulate_feed(item: Item):
             print(lcf)
 
             return {
+                "available": 1,
                 "status": status,
                 "least-cost-feed": lcf,
                 # "quantities": list(res.x),
@@ -91,12 +92,16 @@ async def formulate_feed(item: Item):
         else:
             # print("Not Zero")
             res_dict = {
+                "available": 1,
                 "status": status,
-                "message": "Disnt solve the problem: " + str(res.message),
+                "error": "Didn't solve the problem ==> " + str(res.message),
                 # "input": item, 
                 # "raw": f
             }
             return res_dict
 
     except:
-        return {"error": "Some Error occured"}
+        return {
+                "available": 0,
+                "error": "Some unexpected error occured"
+                }
