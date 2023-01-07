@@ -54,7 +54,7 @@ async def formulate_feed(item: Item):
         print("Bounds: ", bounds)
         print("Sum matrix: ", sum_mat)
 
-        res = linprog(costs, A_ub=[CPs, MEs], b_ub=[-22, -2700], A_eq=[sum_mat], b_eq=[1] #, bounds=bounds
+        res = linprog(costs, A_ub=[CPs, MEs], b_ub=[-22, -2700], A_eq=[sum_mat], b_eq=[1] , bounds=bounds
         )
         print(res)
 
