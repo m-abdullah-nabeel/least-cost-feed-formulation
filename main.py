@@ -39,10 +39,10 @@ async def formulate_feed(item: Item):
             print(row[i])
             sum_mat.append(1)
             names.append(row[i]['name'])
-            costs.append(row[i]['cost'])
-            CPs.append(row[i]['CP'])
-            MEs.append(row[i]['ME'])
-            bounds.append((row[i]['min'], row[i]['max']))
+            costs.append(float(row[i]['cost']))
+            CPs.append(float(row[i]['CP']))
+            MEs.append(float(row[i]['ME']))
+            bounds.append((float(row[i]['min']), float(row[i]['max'])))
         
         CPs = [ -x for x in CPs]
         MEs = [ -x for x in MEs]
@@ -100,8 +100,8 @@ async def formulate_feed(item: Item):
             }
             return res_dict
 
-    except:
+    except Exception as ex:
         return {
                 "available": 0,
-                "error": "Some unexpected error occured"
+                "error": f"Some unexpected error occured: {ex}"
                 }
